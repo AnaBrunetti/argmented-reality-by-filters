@@ -1,8 +1,8 @@
 import streamlit as st
-import numpy as np
 import cv2
 
-path = 'C:/Ana/cc6/APS/venv/Lib/site-packages/cv2/data/'
+### Change path variable to run ###
+path = 'C:/Ana/cs7/augmented-reality-by-filters/venv/Lib/site-packages/cv2/data/'
 face_cascade = cv2.CascadeClassifier(path + 'haarcascade_frontalface_default.xml')
 eye_cascade = cv2.CascadeClassifier(path + 'haarcascade_eye.xml')
 
@@ -27,37 +27,12 @@ def build_sidebar():
         - Python 3.9
         - opencv-python
         - streamlit
-        - numpy
         """
     )
 
 
-def set_image(placeholder, file):
-    placeholder.image(file, use_column_width=True)
-
-
-def decode(image_bytes):
-    image_bytes.seek(0)
-    file_bytes = np.asarray(bytearray(image_bytes.read()), dtype=np.uint8)
-    img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-    return img
-
-
-def detect_faces(img):
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-    return len(faces) > 0
-
-def draw_over_the_face(img):
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-    for (x, y, w, h) in faces:
-        cv2.rectangle(img, (x, y), (x+w, y+h), (0, 0, 255), 3)
-    return img
-
-
 def put_sticker_on_head(img):
-    witch = cv2.imread('testse1-removebg-preview.png')
+    witch = cv2.imread('images/pokemon-filter.png')
     original_witch_h, original_witch_w, witch_channels = witch.shape
     witch_gray = cv2.cvtColor(witch, cv2.COLOR_BGR2GRAY)
     ret, original_mask = cv2.threshold(witch_gray, 10, 255, cv2.THRESH_BINARY_INV)
@@ -100,42 +75,15 @@ def put_sticker_on_head(img):
 
 def process_types(img, type_selectbox, color_selectbox):
     result_image = img
-    if type_selectbox == "Indentificar rosto":
-        result_image = draw_over_the_face(img)
-    elif type_selectbox == "Colocar adesivo":
+    if type_selectbox == "Colocar adesivo":
         result_image = put_sticker_on_head(img)
     return result_image
-
-
-def process_image(col_right):
-    uploaded_file = st.file_uploader("Escolha uma imagem", type=['jpg', 'png'])
-    type_selectbox = st.selectbox(
-        "Escolha o tipo de processamento",
-        ("Indentificar rosto", "Colocar adesivo")
-    )
-    color_selectbox = None
-
-    with col_right:
-        st.markdown('#### Resultado do processamento.')
-        img_placeholder = st.empty()
-
-    if uploaded_file:
-        img = decode(uploaded_file)
-
-        if type_selectbox == "Indentificar rosto":
-            if not detect_faces(img):
-                with col_right:
-                    st.write('Nenhum rosto encontrado.')
-
-        result_image = process_types(img, type_selectbox, color_selectbox)
-        imageRGB = cv2.cvtColor(result_image, cv2.COLOR_BGR2RGB)
-        set_image(img_placeholder, imageRGB)
 
 
 def process_video(col_right):
     type_selectbox = st.selectbox(
         "Escolha o tipo de processamento",
-        ("Indentificar rosto", "Colocar adesivo")
+        ("Colocar adesivo",)
     )
     color_selectbox = None
     process = st.button('Iniciar o vídeo')

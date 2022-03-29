@@ -3,7 +3,6 @@ import streamlit as st
 from utils import (
     build_sidebar,
     process_video,
-    process_image,
 )
 
 face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
