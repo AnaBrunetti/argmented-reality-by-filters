@@ -1,5 +1,5 @@
 # Overview
-Filters with Python, Opencv, Numpy and Streamlit.
+Filters with Python, Opencv and Streamlit.
 
 # Requirements
 
